@@ -1,0 +1,97 @@
+
+// Professional Material Design Theme with Blue/Indigo palette
+@use '@angular/material' as mat;
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// Define professional custom color palette
+$custom-primary: (
+  50: #e3f2fd,
+  100: #bbdefb,
+  200: #90caf9,
+  300: #64b5f6,
+  400: #42a5f5,
+  500: #2196f3,
+  600: #1e88e5,
+  700: #1976d2,
+  800: #1565c0,
+  900: #0d47a1,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+$custom-accent: (
+  50: #e8eaf6,
+  100: #c5cae9,
+  200: #9fa8da,
+  300: #7986cb,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  )
+);
+
+
+// Define a Material theme with compact professional typography
+$custom-typography: mat.define-typography-config(
+  $font-family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  $headline-1: mat.define-typography-level(48px, 52px, 300),    // Hero headlines
+  $headline-2: mat.define-typography-level(32px, 36px, 300),    // Large headlines
+  $headline-3: mat.define-typography-level(24px, 28px, 400),    // Section headlines
+  $headline-4: mat.define-typography-level(18px, 24px, 400),    // Subsection headlines
+  $headline-5: mat.define-typography-level(14px, 20px, 500),    // Card headers
+  $headline-6: mat.define-typography-level(13px, 18px, 500),    // Component headers
+  $subtitle-1: mat.define-typography-level(12px, 18px, 500),    // Primary subtitle
+  $subtitle-2: mat.define-typography-level(11px, 16px, 500),    // Secondary subtitle
+  $body-1: mat.define-typography-level(12px, 18px, 400),        // Main body text
+  $body-2: mat.define-typography-level(11px, 16px, 400),        // Secondary body text
+  $caption: mat.define-typography-level(9px, 14px, 400),        // Captions, footnotes
+  $button: mat.define-typography-level(11px, 11px, 500),        // Button text
+  $overline: mat.define-typography-level(9px, 12px, 500),       // Overline labels
+);
+
+$theme: mat.define-light-theme((
+  color: (
+    primary: mat.define-palette($custom-primary),
+    accent: mat.define-palette($custom-accent),
+  ),
+  typography: $custom-typography,
+  density: 0,
+));
+
+// Apply the theme to the app
+@include mat.all-component-themes($theme);
+
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}

@@ -1,0 +1,825 @@
+<div class="digital-library-page">
+
+  <!-- =========================================================
+       TOAST
+       ========================================================= -->
+
+  <div
+    *ngIf="message"
+    class="toast"
+    [class.success]="messageType === 'success'"
+    [class.error]="messageType === 'error'"
+  >
+    <span class="toast-icon">
+      {{ messageType === 'success' ? '✓' : '!' }}
+    </span>
+
+    <span>{{ message }}</span>
+  </div>
+
+
+  <!-- =========================================================
+       HEADER
+       ========================================================= -->
+
+  <header class="page-header">
+
+    <div class="header-left">
+
+      <a
+        routerLink="/library-grid"
+        class="back-button"
+        aria-label="Back to Library"
+      >
+        <span class="back-arrow">←</span>
+        <span class="back-text">Back to Library</span>
+      </a>
+
+      <div class="brand-divider"></div>
+
+      <div class="page-brand">
+
+        <div class="brand-icon">
+          📚
+        </div>
+
+        <div class="brand-copy">
+
+          <div class="brand-title">
+            Suraksha Library
+          </div>
+
+          <div class="brand-subtitle">
+            Digital Learning Hub
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <a
+      routerLink="/library-grid"
+      class="mobile-library-button"
+    >
+      Library
+    </a>
+
+  </header>
+
+
+  <!-- =========================================================
+       MAIN
+       ========================================================= -->
+
+  <main class="page-container">
+
+
+    <!-- =======================================================
+         HERO
+         ======================================================= -->
+
+    <section class="hero">
+
+      <div class="hero-glow"></div>
+
+      <div class="hero-content">
+
+        <span class="hero-label">
+          DIGITAL LIBRARY
+        </span>
+
+        <h1>
+          Learn. Explore.<br>
+          <span>Grow.</span>
+        </h1>
+
+        <p>
+          Discover free books, government resources,
+          competitive exam material, programming resources
+          and more — all from one place.
+        </p>
+
+      </div>
+
+      <div class="hero-illustration">
+
+        <div class="book-icon">
+          📖
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         SEARCH
+         ======================================================= -->
+
+    <section class="search-section">
+
+      <div class="search-wrapper">
+
+        <span class="search-icon">
+          🔍
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="searchResources()"
+          placeholder="Search books, subjects, exams..."
+          class="search-input"
+          aria-label="Search resources"
+        />
+
+        <button
+          *ngIf="searchQuery"
+          type="button"
+          class="clear-button"
+          (click)="clearSearch()"
+          aria-label="Clear search"
+        >
+          ×
+        </button>
+
+        <button
+          type="button"
+          class="search-button"
+          (click)="searchResources()"
+        >
+          Search
+        </button>
+
+      </div>
+
+      <div class="search-hints">
+        <span>📚 Books</span>
+        <span>🎓 Exams</span>
+        <span>💻 Programming</span>
+        <span>🤖 AI Tools</span>
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         STATS
+         ======================================================= -->
+
+    <section class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="stat-icon blue">📚</div>
+
+        <div>
+          <div class="stat-value">
+            {{ stats.totalBooks }}+
+          </div>
+
+          <div class="stat-label">
+            Free Books
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon green">🔗</div>
+
+        <div>
+          <div class="stat-value">
+            {{ stats.totalResources }}+
+          </div>
+
+          <div class="stat-label">
+            Resources
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon purple">👥</div>
+
+        <div>
+          <div class="stat-value">
+            {{ stats.activeUsers }}+
+          </div>
+
+          <div class="stat-label">
+            Students
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon orange">⬇</div>
+
+        <div>
+          <div class="stat-value">
+            {{ stats.totalDownloads }}+
+          </div>
+
+          <div class="stat-label">
+            Downloads
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         RESOURCES
+         ======================================================= -->
+
+    <section class="resource-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-eyebrow">
+            EXPLORE
+          </span>
+
+          <h2>
+            Learning Resources
+          </h2>
+
+          <p>
+            Access useful educational and official resources
+            from one place.
+          </p>
+
+        </div>
+
+        <div class="resource-count">
+          {{ getFilteredResources().length }} resources
+        </div>
+
+      </div>
+
+
+      <!-- CATEGORY BAR -->
+
+      <div class="category-wrapper">
+
+        <div class="category-scroll">
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'all'"
+            (click)="filterResources('all')"
+          >
+            <span>✨</span>
+            All
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'School'"
+            (click)="filterResources('School')"
+          >
+            <span>📚</span>
+            School
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'UPSC'"
+            (click)="filterResources('UPSC')"
+          >
+            <span>🎓</span>
+            UPSC
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'SSC'"
+            (click)="filterResources('SSC')"
+          >
+            <span>📝</span>
+            SSC
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Banking'"
+            (click)="filterResources('Banking')"
+          >
+            <span>🏦</span>
+            Banking
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Railway'"
+            (click)="filterResources('Railway')"
+          >
+            <span>🚂</span>
+            Railway
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'General'"
+            (click)="filterResources('General')"
+          >
+            <span>📋</span>
+            General
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Programming'"
+            (click)="filterResources('Programming')"
+          >
+            <span>💻</span>
+            Programming
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Technical'"
+            (click)="filterResources('Technical')"
+          >
+            <span>🔧</span>
+            Technical
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Jobs'"
+            (click)="filterResources('Jobs')"
+          >
+            <span>💼</span>
+            Jobs
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Skills'"
+            (click)="filterResources('Skills')"
+          >
+            <span>🎯</span>
+            Skills
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Coding'"
+            (click)="filterResources('Coding')"
+          >
+            <span>⚡</span>
+            Coding
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Commerce'"
+            (click)="filterResources('Commerce')"
+          >
+            <span>💰</span>
+            Commerce
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Degree'"
+            (click)="filterResources('Degree')"
+          >
+            <span>🎓</span>
+            Degree
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'Junior'"
+            (click)="filterResources('Junior')"
+          >
+            <span>🧒</span>
+            Junior
+          </button>
+
+
+          <button
+            type="button"
+            class="category-button"
+            [class.active]="selectedCategory === 'AI Tools'"
+            (click)="filterResources('AI Tools')"
+          >
+            <span>🤖</span>
+            AI Tools
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- LOADING -->
+
+      <div
+        class="loading-container"
+        *ngIf="loading"
+      >
+        <div class="spinner"></div>
+        <p>Loading resources...</p>
+      </div>
+
+
+      <!-- RESOURCE GRID -->
+
+      <div
+        class="resources-grid"
+        *ngIf="!loading"
+      >
+
+        <article
+          class="resource-card"
+          *ngFor="let resource of getFilteredResources()"
+          (click)="openLink(resource.url)"
+          tabindex="0"
+          role="button"
+        >
+
+          <div class="resource-top">
+
+            <div class="resource-icon">
+              {{ resource.icon }}
+            </div>
+
+            <span
+              class="resource-category"
+              [style.background-color]="
+                getCategoryColor(resource.category)
+              "
+            >
+              {{ resource.category }}
+            </span>
+
+          </div>
+
+
+          <h3>
+            {{ resource.title }}
+          </h3>
+
+
+          <p>
+            {{ resource.description }}
+          </p>
+
+
+          <div class="resource-url">
+
+            <span>↗</span>
+
+            <span>
+              {{ resource.url }}
+            </span>
+
+          </div>
+
+
+          <div class="resource-bottom">
+
+            <span
+              class="official"
+              *ngIf="resource.isOfficial"
+            >
+              ✓ Official Source
+            </span>
+
+            <button
+              type="button"
+              class="visit-button"
+              (click)="
+                $event.stopPropagation();
+                openLink(resource.url)
+              "
+            >
+              Visit
+              <span>↗</span>
+            </button>
+
+          </div>
+
+        </article>
+
+      </div>
+
+
+      <!-- EMPTY -->
+
+      <div
+        class="empty-state"
+        *ngIf="
+          !loading &&
+          getFilteredResources().length === 0
+        "
+      >
+
+        <div class="empty-icon">
+          🔎
+        </div>
+
+        <h3>
+          No resources found
+        </h3>
+
+        <p>
+          Try another search term or select
+          a different category.
+        </p>
+
+        <button
+          type="button"
+          (click)="resetFilters()"
+        >
+          Show All Resources
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         HOW IT WORKS
+         ======================================================= -->
+
+    <section class="guide-section">
+
+      <div class="section-heading centered">
+
+        <span class="section-eyebrow">
+          SIMPLE &amp; EASY
+        </span>
+
+        <h2>
+          How to Use
+        </h2>
+
+        <p>
+          Access any resource in just a few steps.
+        </p>
+
+      </div>
+
+
+      <div class="guide-grid">
+
+        <div class="guide-card">
+
+          <div class="guide-number">01</div>
+
+          <div class="guide-icon">🔎</div>
+
+          <h3>Find</h3>
+
+          <p>
+            Search or browse resources by category.
+          </p>
+
+        </div>
+
+
+        <div class="guide-card">
+
+          <div class="guide-number">02</div>
+
+          <div class="guide-icon">📖</div>
+
+          <h3>Choose</h3>
+
+          <p>
+            Select the resource you want to explore.
+          </p>
+
+        </div>
+
+
+        <div class="guide-card">
+
+          <div class="guide-number">03</div>
+
+          <div class="guide-icon">↗</div>
+
+          <h3>Visit</h3>
+
+          <p>
+            Open the official website in a new tab.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================================================
+       PROFESSIONAL FOOTER
+       ========================================================= -->
+
+  <footer class="page-footer">
+
+    <div class="footer-inner">
+
+      <!-- BRAND -->
+
+      <div class="footer-brand">
+
+        <div class="footer-logo">
+          📚
+        </div>
+
+        <div>
+
+          <div class="footer-title">
+            Suraksha Library
+          </div>
+
+          <div class="footer-subtitle">
+            Digital Learning Hub
+          </div>
+
+          <p class="footer-tagline">
+            Learn. Explore. Grow.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONTACT -->
+
+      <div class="footer-column">
+
+        <div class="footer-heading">
+          Contact Us
+        </div>
+
+        <a
+          href="tel:9506629814"
+          class="footer-contact-link"
+        >
+          <span class="footer-contact-icon">☎</span>
+          <span>9506629814</span>
+        </a>
+
+        <a
+          href="tel:8090272727"
+          class="footer-contact-link"
+        >
+          <span class="footer-contact-icon">☎</span>
+          <span>8090272727</span>
+        </a>
+
+        <a
+          href="mailto:surakshawalls@gmail.com"
+          class="footer-contact-link"
+        >
+          <span class="footer-contact-icon">✉</span>
+          <span>surakshawalls@gmail.com</span>
+        </a>
+
+      </div>
+
+
+      <!-- LOCATION -->
+
+      <div class="footer-column footer-location">
+
+        <div class="footer-heading">
+          Visit Us
+        </div>
+
+        <div class="footer-info">
+
+          <span class="footer-contact-icon">
+            📍
+          </span>
+
+          <span>
+            Near Union Bank, Mishra Bhawan,<br>
+            Mahajuda, Suriyawan,<br>
+            Bhadohi 221404
+          </span>
+
+        </div>
+
+
+        <div class="footer-info">
+
+          <span class="footer-contact-icon">
+            🕐
+          </span>
+
+          <span>
+            7 AM – 8 PM<br>
+            No weekly off
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div class="footer-actions">
+
+        <button
+          type="button"
+          class="footer-whatsapp"
+          (click)="openWhatsApp()"
+        >
+          <span>💬</span>
+          WhatsApp
+        </button>
+
+        <button
+          type="button"
+          class="footer-call"
+          (click)="callNow()"
+        >
+          <span>☎</span>
+          Call Now
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER BOTTOM -->
+
+    <div class="footer-bottom">
+
+      <div class="footer-copyright">
+        © 2026 Suraksha Library. All rights reserved.
+      </div>
+
+      <div class="footer-developed">
+        Designed &amp; Developed by
+        <a
+          href="https://www.surakshawalls.space/software"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Suraksha Software
+        </a>
+      </div>
+
+    </div>
+
+  </footer>
+
+</div>

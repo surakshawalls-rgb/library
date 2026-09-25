@@ -1,0 +1,416 @@
+<!-- src/app/pages/library-dashboard/library-dashboard.component.html -->
+<app-breadcrumb></app-breadcrumb>
+<div class="dashboard-container-modern">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="header-left">
+        <button mat-icon-button (click)="goBackToGrid()" class="back-button" matTooltip="Back to Grid">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1 class="page-title">
+          <mat-icon>dashboard</mat-icon>
+          Library Dashboard
+        </h1>
+        <p class="page-subtitle">Real-time overview of library operations</p>
+      </div>
+      <button mat-raised-button color="primary" (click)="loadDashboardData()">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert-danger">
+    <mat-icon>error</mat-icon>
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <div *ngIf="!loading" class="dashboard-content">
+    <!-- Primary KPI Cards Grid -->
+    <div class="stats-grid-modern primary-kpi">
+      <!-- Seat Occupancy Card -->
+      <mat-card class="stat-card-modern occupancy-card">
+        <mat-card-content>
+          <div class="card-icon blue">
+            <mat-icon>event_seat</mat-icon>
+          </div>
+          <div class="card-details">
+            <h3 class="card-value">{{ stats.occupiedSeats }}/{{ stats.totalSeats }}</h3>
+            <p class="card-label">Occupied Seats</p>
+            <div class="card-progress">
+              <mat-progress-bar 
+                mode="determinate" 
+                [value]="getOccupancyPercentage()"
+                color="primary">
+              </mat-progress-bar>
+              <span class="progress-text">{{ getOccupancyPercentage() }}% Occupancy</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Revenue Card -->
+      <mat-card class="stat-card-modern revenue-card">
+        <mat-card-content>
+          <div class="card-icon green">
+            <mat-icon>attach_money</mat-icon>
+          </div>
+          <div class="card-details">
+            <h3 class="card-value">{{ formatCurrency(stats.totalRevenue) }}</h3>
+            <p class="card-label">Total Revenue</p>
+            <p class="card-subtext">
+              <mat-icon class="trend-up">trending_up</mat-icon>
+              This Month
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Expenses Card -->
+      <mat-card class="stat-card-modern expenses-card">
+        <mat-card-content>
+          <div class="card-icon orange">
+            <mat-icon>receipt_long</mat-icon>
+          </div>
+          <div class="card-details">
+            <h3 class="card-value">{{ formatCurrency(stats.totalExpenses) }}</h3>
+            <p class="card-label">Total Expenses</p>
+            <p class="card-subtext">
+              <mat-icon class="trend-down">trending_down</mat-icon>
+              This Month
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Cash Balance Card -->
+      <mat-card class="stat-card-modern balance-card" [class.negative]="stats.cashBalance < 0">
+        <mat-card-content>
+          <div class="card-icon" [ngClass]="stats.cashBalance >= 0 ? 'purple' : 'red'">
+            <mat-icon>account_balance_wallet</mat-icon>
+          </div>
+          <div class="card-details">
+            <h3 class="card-value">{{ formatCurrency(stats.cashBalance) }}</h3>
+            <p class="card-label">Cash Balance</p>
+            <p class="card-subtext">
+              <mat-icon>{{stats.cashBalance >= 0 ? 'check_circle' : 'warning'}}</mat-icon>
+              Auto-Calculated
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Revenue Overview Section -->
+    <div class="revenue-overview-section">
+      <div class="section-header">
+        <div class="header-left">
+          <mat-icon class="section-icon">bar_chart</mat-icon>
+          <h2 class="section-title">Revenue Overview</h2>
+        </div>
+        <p class="section-subtitle">Last 3 Months & Yearly Performance</p>
+      </div>
+
+      <div class="revenue-grid">
+        <!-- Last 3 Months Revenue Cards -->
+        <mat-card class="revenue-overview-card monthly-revenue-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>calendar_month</mat-icon>
+              Last 3 Months Performance
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="monthly-revenue-list">
+              <div *ngFor="let monthData of last3MonthsRevenue; let i = index" 
+                   class="month-item"
+                   [class.latest]="i === 2">
+                <div class="month-info">
+                  <div class="month-icon-wrapper" [ngClass]="'color-' + i">
+                    <mat-icon>calendar_today</mat-icon>
+                  </div>
+                  <div class="month-details">
+                    <span class="month-name">{{ monthData.month }} {{ monthData.year }}</span>
+                    <span class="month-label" *ngIf="i === 2">Current Month</span>
+                    <span class="month-label" *ngIf="i !== 2">Past Month</span>
+                  </div>
+                </div>
+                <div class="month-revenue">
+                  <span class="revenue-amount">{{ formatCurrency(monthData.revenue) }}</span>
+                  <mat-icon class="trend-icon" *ngIf="i > 0 && monthData.revenue > last3MonthsRevenue[i-1].revenue">trending_up</mat-icon>
+                  <mat-icon class="trend-icon down" *ngIf="i > 0 && monthData.revenue < last3MonthsRevenue[i-1].revenue">trending_down</mat-icon>
+                </div>
+              </div>
+              
+              <div class="total-3months">
+                <span class="total-label">Total (3 Months)</span>
+                <span class="total-amount">{{ formatCurrency(getTotalLast3Months()) }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Yearly Revenue Card -->
+        <mat-card class="revenue-overview-card yearly-revenue-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>assessment</mat-icon>
+              Annual Performance
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="yearly-revenue-content">
+              <div class="year-badge">
+                <mat-icon>calendar_view_year</mat-icon>
+                <span>{{ selectedYear }}</span>
+              </div>
+              <div class="yearly-amount">
+                <h2>{{ formatCurrency(yearlyRevenue) }}</h2>
+                <p class="yearly-label">Total Yearly Revenue</p>
+              </div>
+              <div class="yearly-stats">
+                <div class="stat-item">
+                  <mat-icon>trending_up</mat-icon>
+                  <div>
+                    <span class="stat-value">{{ formatCurrency(yearlyRevenue / 12) }}</span>
+                    <span class="stat-label">Avg. Monthly</span>
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <mat-icon>date_range</mat-icon>
+                  <div>
+                    <span class="stat-value">{{ getCurrentMonthNumber() }}/12</span>
+                    <span class="stat-label">Months Tracked</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Shift Distribution Card -->
+    <mat-card class="shift-card-modern">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>schedule</mat-icon>
+          Shift Distribution
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="shift-distribution-modern">
+          <div class="shift-item-modern">
+            <div class="shift-info">
+              <mat-icon class="shift-icon full-time">wb_sunny</mat-icon>
+              <span class="shift-name">Full Time</span>
+            </div>
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="(stats.fullTimeCount / 36) * 100"
+              color="primary">
+            </mat-progress-bar>
+            <span class="shift-count">{{ stats.fullTimeCount }} students</span>
+          </div>
+
+          <div class="shift-item-modern">
+            <div class="shift-info">
+              <mat-icon class="shift-icon morning">wb_twilight</mat-icon>
+              <span class="shift-name">Morning Shift</span>
+            </div>
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="(stats.firstHalfCount / 36) * 100"
+              color="accent">
+            </mat-progress-bar>
+            <span class="shift-count">{{ stats.firstHalfCount }} students</span>
+          </div>
+
+          <div class="shift-item-modern">
+            <div class="shift-info">
+              <mat-icon class="shift-icon evening">nights_stay</mat-icon>
+              <span class="shift-name">Evening Shift</span>
+            </div>
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="(stats.secondHalfCount / 36) * 100"
+              color="warn">
+            </mat-progress-bar>
+            <span class="shift-count">{{ stats.secondHalfCount }} students</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Two Column Layout -->
+    <div class="content-grid-modern">
+      <!-- Expiring Seats Card -->
+      <mat-card class="data-card-modern">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon [matBadge]="expiringSeats.length" matBadgeColor="warn">warning</mat-icon>
+            Expiring Soon (Next 3 Days)
+          </mat-card-title>
+          <button *ngIf="expiringSeats.length > 0" mat-raised-button color="accent" (click)="sendReminderToAll()">
+            <mat-icon>send</mat-icon>
+            Send All Reminders
+          </button>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="expiringSeats.length === 0" class="empty-state-modern">
+            <mat-icon>check_circle</mat-icon>
+            <p>No seats expiring soon!</p>
+          </div>
+
+          <table *ngIf="expiringSeats.length > 0" mat-table [dataSource]="expiringSeats" class="mat-elevation-z0">
+            <ng-container matColumnDef="seat_no">
+              <th mat-header-cell *matHeaderCellDef>Seat</th>
+              <td mat-cell *matCellDef="let seat"><strong>#{{ seat.seat_no }}</strong></td>
+            </ng-container>
+
+            <ng-container matColumnDef="student">
+              <th mat-header-cell *matHeaderCellDef>Student</th>
+              <td mat-cell *matCellDef="let seat">
+                <div class="student-cell">
+                  <strong>{{ seat.student_name }}</strong>
+                  <span class="student-mobile">{{ seat.mobile }}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="shift">
+              <th mat-header-cell *matHeaderCellDef>Shift</th>
+              <td mat-cell *matCellDef="let seat">
+                <mat-chip class="shift-chip">{{ seat.shift_type }}</mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expiry">
+              <th mat-header-cell *matHeaderCellDef>Expiry</th>
+              <td mat-cell *matCellDef="let seat">{{ formatDate(seat.expiry_date) }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="days">
+              <th mat-header-cell *matHeaderCellDef>Days Left</th>
+              <td mat-cell *matCellDef="let seat">
+                <mat-chip [color]="seat.days_remaining <= 1 ? 'warn' : 'primary'">
+                  <mat-icon>access_time</mat-icon>
+                  {{ seat.days_remaining }} days
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['seat_no', 'student', 'shift', 'expiry', 'days']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['seat_no', 'student', 'shift', 'expiry', 'days'];"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Recent Payments Card -->
+      <mat-card class="data-card-modern">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>payment</mat-icon>
+            Recent Payments
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="recentPayments.length === 0" class="empty-state-modern">
+            <mat-icon>inbox</mat-icon>
+            <p>No payments yet</p>
+          </div>
+
+          <table *ngIf="recentPayments.length > 0" mat-table [dataSource]="recentPayments" class="mat-elevation-z0">
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let payment">{{ formatDate(payment.payment_date) }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="student">
+              <th mat-header-cell *matHeaderCellDef>Student</th>
+              <td mat-cell *matCellDef="let payment"><strong>{{ payment.student_name }}</strong></td>
+            </ng-container>
+
+            <ng-container matColumnDef="shift">
+              <th mat-header-cell *matHeaderCellDef>Shift</th>
+              <td mat-cell *matCellDef="let payment">
+                <mat-chip class="shift-chip">{{ payment.shift_type }}</mat-chip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef>Amount</th>
+              <td mat-cell *matCellDef="let payment">
+                <span class="amount-success">{{ formatCurrency(payment.amount_paid) }}</span>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['date', 'student', 'shift', 'amount']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['date', 'student', 'shift', 'amount'];"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Recent Expenses Card -->
+    <mat-card class="data-card-modern full-width">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>receipt</mat-icon>
+          Recent Expenses
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="recentExpenses.length === 0" class="empty-state-modern">
+          <mat-icon>inbox</mat-icon>
+          <p>No expenses yet</p>
+        </div>
+
+        <table *ngIf="recentExpenses.length > 0" mat-table [dataSource]="recentExpenses" class="mat-elevation-z0">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let expense">{{ formatDate(expense.date) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef>Category</th>
+            <td mat-cell *matCellDef="let expense">
+              <mat-chip color="accent">{{ expense.category }}</mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let expense">{{ expense.description || '-' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="vendor">
+            <th mat-header-cell *matHeaderCellDef>Vendor</th>
+            <td mat-cell *matCellDef="let expense">{{ expense.vendor_name || '-' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let expense">
+              <span class="amount-danger">{{ formatCurrency(expense.amount) }}</span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['date', 'category', 'description', 'vendor', 'amount']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['date', 'category', 'description', 'vendor', 'amount'];"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+
+
+
+</div>
+<app-lib-footer></app-lib-footer>

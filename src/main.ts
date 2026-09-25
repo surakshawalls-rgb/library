@@ -1,0 +1,47 @@
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { importProvidersFrom } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ToastrModule } from 'ngx-toastr';
+
+import { AppComponent } from './app/app';
+import { routes } from './app/app.routes';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideAnimations(),
+    provideRouter(routes),
+    provideHttpClient(),
+    importProvidersFrom(
+      MatDialogModule,
+      MatButtonModule,
+      MatButtonToggleModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatDatepickerModule,
+      MatNativeDateModule,
+      MatSelectModule,
+      MatRadioModule,
+      MatProgressSpinnerModule,
+      ToastrModule.forRoot({
+        timeOut: 5000,
+        positionClass: 'toast-top-right',
+        preventDuplicates: true,
+        progressBar: true,
+        closeButton: true,
+        newestOnTop: true
+      })
+    )
+  ]
+});

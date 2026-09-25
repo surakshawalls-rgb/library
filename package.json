@@ -1,0 +1,61 @@
+{
+  "name": "suraksha-report",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android",
+    "android:build": "npm run build:prod && npx cap sync android && npx cap copy android",
+    "android:run": "npm run android:build && npx cap open android"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@9.3.1",
+  "dependencies": {
+    "@angular/animations": "^16.2.12",
+    "@angular/cdk": "^16.2.12",
+    "@angular/common": "^16.2.12",
+    "@angular/compiler": "^16.2.12",
+    "@angular/core": "^16.2.12",
+    "@angular/forms": "^16.2.12",
+    "@angular/material": "^16.2.12",
+    "@angular/material-moment-adapter": "^16.2.12",
+    "@angular/platform-browser": "^16.2.12",
+    "@angular/router": "^16.2.12",
+    "@capacitor/android": "6.1.2",
+    "@capacitor/cli": "6.1.2",
+    "@capacitor/core": "6.1.2",
+    "@capacitor/push-notifications": "^8.0.1",
+    "@supabase/supabase-js": "^2.93.3",
+    "date-fns": "^4.1.0",
+    "ngx-toastr": "^17.0.2",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "^0.16.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.2.12",
+    "@angular/cli": "^16.2.12",
+    "@angular/compiler-cli": "^16.2.12",
+    "@angular/material": "^16.2.12",
+    "@capacitor/assets": "^3.0.5",
+    "jsdom": "^27.1.0",
+    "typescript": "~5.1.6"
+  }
+}

@@ -1,0 +1,133 @@
+<!-- src/app/pages/login/login.component.html -->
+<div class="login-page">
+
+  <!-- LEFT: Brand panel -->
+  <div class="login-left">
+    <div class="panel-grid-line"></div>
+    <div class="panel-noise"></div>
+    <div class="panel-inner">
+
+      <div class="brand-block">
+        
+        <div class="brand-kicker">
+          <span class="brand-dot"></span>SURAKSHA GROUP
+        </div>
+        <h1 class="panel-headline">Welcome Back.</h1>
+        <p class="panel-desc">
+          One account gives you access to all Suraksha platforms.
+          Your role determines which features are available to you.
+        </p>
+      </div>
+
+      <div class="role-list">
+        <div class="role-item">
+          <div class="role-icon"><mat-icon>admin_panel_settings</mat-icon></div>
+          <div class="role-body">
+            <strong>Admin</strong>
+            <span>Full platform management and configuration</span>
+          </div>
+        </div>
+        <div class="role-item">
+          <div class="role-icon"><mat-icon>badge</mat-icon></div>
+          <div class="role-body">
+            <strong>Staff / Employee</strong>
+            <span>Operations, entries, and daily management</span>
+          </div>
+        </div>
+        <div class="role-item">
+          <div class="role-icon"><mat-icon>school</mat-icon></div>
+          <div class="role-body">
+            <strong>Student</strong>
+            <span>Library portal, resources, and attendance</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Login form -->
+  <div class="login-right">
+    <div class="mobile-login-header">
+  <div class="mobile-brand-icon">
+    <mat-icon>local_library</mat-icon>
+  </div>
+
+  <div class="mobile-brand-text">
+    <strong>Suraksha Library</strong>
+    <span>Digital Learning &amp; Study Hub</span>
+  </div>
+</div>
+    <div class="form-wrap">
+
+      <div class="form-header">
+        <h2>Sign in to your account</h2>
+      </div>
+
+      <form (ngSubmit)="onLogin()" class="login-form">
+        <div class="form-field">
+          <label class="field-label">Email Address</label>
+          <div class="input-wrap">
+            <mat-icon class="inp-icon">email</mat-icon>
+            <input
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              placeholder="name@surakshawalls.com"
+              class="form-input"
+              [disabled]="loading"
+              autocomplete="email"
+              required>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label">Password</label>
+          <div class="input-wrap">
+            <mat-icon class="inp-icon">lock</mat-icon>
+            <input
+              type="password"
+              [(ngModel)]="password"
+              name="password"
+              placeholder="Enter your password"
+              class="form-input"
+              [disabled]="loading"
+              autocomplete="current-password"
+              required>
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage && errorMessage.length > 0" class="error-box" role="alert">
+          <mat-icon>error_outline</mat-icon>
+          <div>
+            <strong>Unable to sign in</strong>
+            <p>{{ errorMessage }}</p>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-signin" [disabled]="loading">
+          <mat-icon>{{ loading ? 'hourglass_empty' : 'login' }}</mat-icon>
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+
+      <div class="form-footer">
+  <p class="copyright">
+    © 2026 Suraksha Group. All rights reserved.
+  </p>
+
+      <p class="developer-credit">
+        Designed &amp; Developed by
+        <a
+          href="https://www.surakshawalls.space/software"
+          target="_blank"
+          rel="noopener noreferrer">
+          Suraksha Software
+        </a>
+      </p>
+    </div>
+
+    </div>
+  </div>
+
+</div>
