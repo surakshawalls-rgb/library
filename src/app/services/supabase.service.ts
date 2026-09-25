@@ -13,14 +13,19 @@ export class SupabaseService {
       'sb_publishable_h161nq_O9ZsC30WbVTaxNg_x9DhrYIh',
       {
         auth: {
-          persistSession: false,  // Disable session persistence to avoid locks
-          autoRefreshToken: false,
-          detectSessionInUrl: false,
-          storage: undefined  // Don't use localStorage at all
+          // Keep the user logged in across app close/reopen
+          persistSession: true,
+
+          // Automatically refresh the session before it expires
+          autoRefreshToken: true,
+
+          // Not required for the Android/Capacitor app
+          detectSessionInUrl: false
         },
+
         global: {
           headers: {
-            'x-client-info': 'suraksha-walls-web'
+            'x-client-info': 'suraksha-walls-library'
           }
         }
       }
@@ -36,7 +41,9 @@ export class SupabaseService {
       amount: w.amount
     }));
 
-    return this.supabase.from('labour').insert(payload);
+    return this.supabase
+      .from('labour')
+      .insert(payload);
   }
 
   getLabour(from: number, to: number) {
@@ -62,7 +69,7 @@ export class SupabaseService {
       client_phone: order.client_phone,
       client_location: order.client_location,
       is_registered: order.is_registered,
-      
+
       fencingPole: order.fencingPole,
       plainPlate: order.plainPlate,
       jumboPillar: order.jumboPillar,
@@ -70,22 +77,24 @@ export class SupabaseService {
       biscuitPlate: order.biscuitPlate,
       production_unit_price: order.production_unit_price,
       production_total: order.production_total,
-      
+
       labour_json: order.labour_json,
       labour_total: order.labour_total,
-      
+
       transport_charge: order.transport_charge,
       installation_charge: order.installation_charge,
       other_charge: order.other_charge,
       notes: order.notes,
-      
+
       total_bill: order.total_bill,
       paid_amount: order.paid_amount,
       due_amount: order.due_amount,
       payment_mode: order.payment_mode
     };
 
-    return this.supabase.from('orders').insert([payload]);
+    return this.supabase
+      .from('orders')
+      .insert([payload]);
   }
 
   getOrders(from: number, to: number) {
@@ -128,18 +137,25 @@ export class SupabaseService {
 
   // ========== REPORTS (QUERY VIEWS) ==========
   queryView(viewName: string) {
-    return this.supabase.from(viewName).select('*');
+    return this.supabase
+      .from(viewName)
+      .select('*');
   }
 
   queryViewWithFilters(viewName: string, filters: any = {}) {
-    let query = this.supabase.from(viewName).select('*');
-    
+    let query = this.supabase
+      .from(viewName)
+      .select('*');
+
     Object.keys(filters).forEach(key => {
-      if (filters[key] !== null && filters[key] !== undefined) {
+      if (
+        filters[key] !== null &&
+        filters[key] !== undefined
+      ) {
         query = query.eq(key, filters[key]);
       }
     });
-    
+
     return query;
   }
 }
