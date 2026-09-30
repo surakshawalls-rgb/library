@@ -1,4 +1,12 @@
 apply plugin: 'com.android.application'
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+
+if (!keystorePropertiesFile.exists()) {
+  throw new GradleException("keystore.properties not found: " + keystorePropertiesFile.absolutePath)
+}
+
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     namespace = "io.suraksha.report"
@@ -7,8 +15,8 @@ android {
         applicationId "io.suraksha.report"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +24,17 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+  signingConfigs {
+    release {
+      storeFile file(keystoreProperties['storeFile'])
+      storePassword keystoreProperties['storePassword']
+      keyAlias keystoreProperties['keyAlias']
+      keyPassword keystoreProperties['keyPassword']
+    }
+  }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -27,16 +44,6 @@ android {
     targetCompatibility JavaVersion.VERSION_17
   }
 
-  applicationVariants.all { variant ->
-    variant.outputs.all { output ->
-      def appName = "surakshahub"
-      def buildType = variant.buildType.name
-      def versionName = variant.versionName
-      def versionCode = variant.versionCode
-      
-      outputFileName = "${appName}-${buildType}-v${versionName}.apk"
-    }
-  }
 
 }
 
@@ -60,14 +67,14 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-    
+
     // Firebase Cloud Messaging
     implementation platform('com.google.firebase:firebase-bom:32.7.0')
     implementation 'com.google.firebase:firebase-messaging'
-    
+
     // Google Play Services (required for GoogleApiAvailability check)
     implementation 'com.google.android.gms:play-services-base:18.3.0'
-    
+
     implementation project(':capacitor-android')
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
