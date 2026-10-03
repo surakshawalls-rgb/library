@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,7 +41,7 @@ export class LibraryPublicComponent implements OnInit {
 
   plans = [
     { name: 'Daily Pass', duration: '1 Day', price: 10, features: ['Basic seating', 'Library access', 'WiFi'] },
-    { name: 'Monthly', duration: '30 Days', price: 400, features: ['Full access', 'Locker facility', 'Digital library'] },
+    { name: 'Monthly', duration: '30 Days', price: 450, features: ['Full access', 'Locker facility', 'Digital library'] },
     { name: 'Quarterly', duration: '3 Months', price: 1100, features: ['All monthly features', 'Priority seating', 'Extended hours'], popular: true },
     { name: 'Yearly', duration: '12 Months', price: 3000, features: ['All quarterly features', 'VIP seating', 'Free printing'] }
   ];
@@ -138,3 +138,5 @@ export class LibraryPublicComponent implements OnInit {
     window.location.href = 'tel:9506629814';
   }
 }
+
+

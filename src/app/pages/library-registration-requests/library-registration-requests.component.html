@@ -55,7 +55,7 @@
       <div class="request-header">
         <div>
           <h3>{{ request.name }}</h3>
-          <p>{{ request.mobile }} â€¢ {{ getShiftLabel(request.requested_shift_type) }}</p>
+          <p>{{ request.mobile }} • {{ getShiftLabel(request.requested_shift_type) }}</p>
         </div>
         <span class="status-pill" [ngClass]="getStatusClass(request.status)">
           {{ request.status }}
@@ -64,10 +64,10 @@
 
       <div class="request-meta">
         <div><strong>Requested On:</strong> {{ formatDateTime(request.created_at) }}</div>
-        <div><strong>Membership:</strong> {{ formatDate(request.requested_start_date) }} â†’ {{ formatDate(request.requested_end_date) }}</div>
+        <div><strong>Membership:</strong> {{ formatDate(request.requested_start_date) }} → {{ formatDate(request.requested_end_date) }}</div>
         <div><strong>Payment Mode:</strong> {{ request.payment_mode | uppercase }}</div>
-        <div><strong>Reg Fee:</strong> â‚¹{{ request.registration_fee_amount || 0 }}</div>
-        <div><strong>Seat Fee:</strong> â‚¹{{ request.seat_fee_amount || 0 }}</div>
+        <div><strong>Reg Fee:</strong> ₹{{ request.registration_fee_amount || 0 }}</div>
+        <div><strong>Seat Fee:</strong> ₹{{ request.seat_fee_amount || 0 }}</div>
         <div *ngIf="request.assigned_seat_no"><strong>Assigned Seat:</strong> {{ request.assigned_seat_no }}</div>
         <div *ngIf="request.reviewed_at"><strong>Reviewed:</strong> {{ formatDateTime(request.reviewed_at) }}</div>
       </div>
@@ -106,7 +106,7 @@
         <div><strong>Student:</strong> {{ selectedRequest.name }}</div>
         <div><strong>Mobile:</strong> {{ selectedRequest.mobile }}</div>
         <div><strong>Requested Shift:</strong> {{ getShiftLabel(selectedRequest.requested_shift_type) }}</div>
-        <div><strong>Requested Duration:</strong> {{ formatDate(selectedRequest.requested_start_date) }} â†’ {{ formatDate(selectedRequest.requested_end_date) }}</div>
+        <div><strong>Requested Duration:</strong> {{ formatDate(selectedRequest.requested_start_date) }} → {{ formatDate(selectedRequest.requested_end_date) }}</div>
       </div>
 
       <div class="form-grid">
@@ -124,12 +124,12 @@
         </div>
 
         <div class="form-field">
-          <label>Registration Fee (â‚¹)</label>
+          <label>Registration Fee (₹)</label>
           <input type="number" [(ngModel)]="approvalRegistrationFee" min="0">
         </div>
 
         <div class="form-field">
-          <label>Seat Fee (â‚¹)</label>
+          <label>Seat Fee (₹)</label>
           <input type="number" [(ngModel)]="approvalSeatFee" min="0">
         </div>
 

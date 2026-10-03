@@ -2289,3 +2289,197 @@ textarea {
   padding: 16px !important;
   border: 1px solid var(--c-border) !important;
 }
+
+/* =========================================================
+   GRID CONTENT FIX
+   Prevent student names / pending amounts from overlapping
+   ========================================================= */
+
+/* Allow seat cards to grow with their content */
+.seat-box {
+  aspect-ratio: auto !important;
+  min-height: 150px;
+  height: 100%;
+  justify-content: flex-start;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Keep the main seat information neatly stacked */
+.seat-box > .seat-status-top {
+  flex-shrink: 0;
+  margin-top: 2px;
+  margin-bottom: 5px;
+}
+
+.seat-box > .seat-number {
+  flex-shrink: 0;
+  margin: 2px 0 5px;
+  line-height: 1.15;
+}
+
+/* Student names must have room and must never be hidden
+   behind the payment badge */
+.seat-box .student-name {
+  width: 92%;
+  max-width: 92%;
+  white-space: normal !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+  min-height: 18px;
+  margin: 3px auto;
+  flex-shrink: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Pending payment badge stays below the student name */
+.seat-box .seat-payment-pending {
+  position: static !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 92%;
+  margin: 4px auto 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1.2;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   TWO STUDENTS / TWO HALF SHIFTS
+   ========================================================= */
+
+.seat-box .dual-students {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  margin-top: 2px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.seat-box .dual-students .half-shift {
+  width: 100%;
+  min-height: 0;
+  padding: 4px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.seat-box .dual-students .half-shift + .half-shift {
+  border-top: 1px dashed rgba(100, 116, 139, 0.22);
+}
+
+.seat-box .dual-students .shift-label {
+  flex-shrink: 0;
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+.seat-box .dual-students .student-name {
+  width: 94%;
+  max-width: 94%;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  min-height: 16px;
+  margin: 2px auto;
+  white-space: normal !important;
+}
+
+.seat-box .dual-students .half-pending {
+  flex-shrink: 0;
+  max-width: 94%;
+  margin-top: 2px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   PENDING PAYMENT VISIBILITY
+   ========================================================= */
+
+.seat-box .seat-payment-pending,
+.seat-box .half-pending {
+  z-index: 3;
+}
+
+/* Don't let attendance indicators cover student information */
+.seat-box .attendance-left,
+.seat-box .attendance-right {
+  z-index: 5;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .seat-box {
+    min-height: 145px;
+  }
+
+  .seat-box .student-name {
+    font-size: 0.68rem;
+  }
+
+  .seat-box .seat-payment-pending {
+    font-size: 0.52rem;
+  }
+
+  .seat-box .dual-students .student-name {
+    font-size: 0.62rem;
+  }
+
+  .seat-box .dual-students .half-pending {
+    font-size: 0.48rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .seat-box {
+    min-height: 145px;
+    padding: 7px 5px;
+  }
+
+  .seat-box .student-name {
+    font-size: 0.66rem;
+  }
+
+  .seat-box .dual-students .student-name {
+    font-size: 0.60rem;
+  }
+
+  .seat-box .seat-payment-pending {
+    font-size: 0.48rem;
+    padding: 2px 5px;
+  }
+
+  .seat-box .dual-students .half-pending {
+    font-size: 0.44rem;
+    padding: 1px 4px;
+  }
+}
+
+@media (max-width: 360px) {
+  .seat-box {
+    min-height: 135px;
+  }
+
+  .seat-box .student-name {
+    font-size: 0.62rem;
+  }
+
+  .seat-box .dual-students .student-name {
+    font-size: 0.56rem;
+  }
+}
+

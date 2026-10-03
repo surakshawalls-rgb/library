@@ -1,4 +1,4 @@
-// src/app/pages/library-students/library-students.component.ts
+﻿// src/app/pages/library-students/library-students.component.ts
 import { Component, OnInit, ChangeDetectorRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -555,7 +555,7 @@ export class LibraryStudentsComponent implements OnInit {
     }
 
     const pendingAmount = this.getPendingPaymentAmount(student) ||
-      (seatInfo.shiftTypeKey === 'full_time' ? 400 : 250);
+      (seatInfo.shiftTypeKey === 'full_time' ? 450 : 250);
 
     const shouldContinue = confirm(
       `Collect pending payment of ${this.formatCurrency(pendingAmount)} from ${student.name} (Seat ${seatInfo.seatNo}, ${seatInfo.shiftType})?`
@@ -1013,3 +1013,5 @@ export class LibraryStudentsComponent implements OnInit {
     this.router.navigate(['/library-grid']);
   }
 }
+
+

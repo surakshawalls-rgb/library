@@ -1,4 +1,4 @@
-// src/app/pages/library-grid/library-grid.component.ts
+﻿// src/app/pages/library-grid/library-grid.component.ts
 import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -74,7 +74,7 @@ export class LibraryGridComponent implements OnInit {
   // Payment Form
   feePayment = {
     shift_type: 'full_time' as 'full_time' | 'first_half' | 'second_half',
-    amount_paid: 400,
+    amount_paid: 450,
     payment_mode: 'cash' as 'cash' | 'upi' | 'card',
     days: 30
   };
@@ -89,7 +89,7 @@ export class LibraryGridComponent implements OnInit {
   // Fee Payment Modal
   showFeePaymentModal = false;
   additionalFeePayment = {
-    amount_paid: 400,
+    amount_paid: 450,
     payment_mode: 'cash' as 'cash' | 'upi' | 'card',
     months: 1,
     shift_type: 'full_time' as 'full_time' | 'first_half' | 'second_half',
@@ -1124,7 +1124,7 @@ export class LibraryGridComponent implements OnInit {
     }
 
     const pendingAmount = this.getStudentPendingPaymentAmount(student)
-      || (context.shiftType === 'full_time' ? 400 : 250);
+      || (context.shiftType === 'full_time' ? 450 : 250);
 
     const shouldContinue = confirm(
       `Collect pending payment of ₹${pendingAmount} from ${student.name} (Seat ${context.seatNo}, ${this.getShiftLabel(context.shiftType)})?`
@@ -1411,7 +1411,7 @@ export class LibraryGridComponent implements OnInit {
     this.selectedStudent = student;
     const currentShiftType = this.getCurrentShiftType();
     this.additionalFeePayment = {
-      amount_paid: currentShiftType === 'full_time' ? 400 : 250,
+      amount_paid: currentShiftType === 'full_time' ? 450 : 250,
       payment_mode: 'cash',
       months: 1,
       shift_type: currentShiftType,
@@ -1424,7 +1424,7 @@ export class LibraryGridComponent implements OnInit {
 
   // Update fee amount based on shift type
   onShiftTypeChange() {
-    this.additionalFeePayment.amount_paid = this.additionalFeePayment.shift_type === 'full_time' ? 400 : 250;
+    this.additionalFeePayment.amount_paid = this.additionalFeePayment.shift_type === 'full_time' ? 450 : 250;
     this.cdr.detectChanges();
   }
 
@@ -1814,7 +1814,7 @@ export class LibraryGridComponent implements OnInit {
   getAttendanceButtonTextForStudent(studentId: string): string {
     const attendance = this.getStudentAttendanceStatus(studentId);
     if (!attendance) return '✅ Check In';
-    if (!attendance.check_out_time) return '🚪 Check Out';
+    if (!attendance.check_out_time) return '🔴 Check Out';
     return '✅ Checked Out';
   }
 
@@ -2037,3 +2037,5 @@ export class LibraryGridComponent implements OnInit {
     this.router.navigate(['/library-bulk-whatsapp']);
   }
 }
+
+

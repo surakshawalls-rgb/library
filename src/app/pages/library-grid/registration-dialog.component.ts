@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+﻿import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -173,8 +173,8 @@ export interface RegistrationResult {
 
         <mat-form-field appearance="outline">
           <mat-label>Fee Amount (₹)</mat-label>
-          <input matInput type="number" formControlName="feeAmount" placeholder="Default: 250/400" required>
-          <mat-hint>Default: ₹250 (Half Day), ₹400 (Full Day) - Editable</mat-hint>
+          <input matInput type="number" formControlName="feeAmount" placeholder="Default: 250/450" required>
+          <mat-hint>Default: ₹250 (Half Day), ₹450 (Full Day) - Editable</mat-hint>
           <mat-error *ngIf="registrationForm.get('feeAmount')?.hasError('required')">
             Fee amount is required
           </mat-error>
@@ -710,7 +710,7 @@ export class RegistrationDialogComponent implements OnInit {
       registration_fee_paid: [0],
       notes: [''],
       selectedShift: [defaultShift],
-      feeAmount: [defaultShift === 'full_time' ? 400 : 250, [Validators.required, Validators.min(1)]],
+      feeAmount: [defaultShift === 'full_time' ? 450 : 250, [Validators.required, Validators.min(1)]],
       paymentMode: ['cash'],
       isPaymentReceived: [!this.isPublicRequestMode]
     });
@@ -772,11 +772,11 @@ export class RegistrationDialogComponent implements OnInit {
   onShiftChange() {
     const shift = this.registrationForm.get('selectedShift')?.value;
     const feeMap: { [key: string]: number } = {
-      'full_time': 400,
+      'full_time': 450,
       'first_half': 250,
       'second_half': 250
     };
-    this.registrationForm.patchValue({ feeAmount: feeMap[shift] || 400 });
+    this.registrationForm.patchValue({ feeAmount: feeMap[shift] || 450 });
   }
 
   isShiftAvailable(shift: 'full_time' | 'first_half' | 'second_half'): boolean {
@@ -807,3 +807,6 @@ export class RegistrationDialogComponent implements OnInit {
     }
   }
 }
+
+
+
