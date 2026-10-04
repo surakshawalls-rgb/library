@@ -41,6 +41,7 @@
     "@capacitor/android": "6.1.2",
     "@capacitor/cli": "6.1.2",
     "@capacitor/core": "6.1.2",
+    "@capacitor/preferences": "^6.0.4",
     "@capacitor/push-notifications": "6.0.5",
     "@supabase/supabase-js": "^2.93.3",
     "date-fns": "^4.1.0",

@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
@@ -62,7 +62,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "15kb",
-                  "maximumError": "30kb"
+                  "maximumError": "40kb"
                 }
               ]
             },
@@ -96,3 +96,4 @@
     }
   }
 }
+

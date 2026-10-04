@@ -1,5 +1,7 @@
 // src/app/services/supabase.service.ts
 import { Injectable } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable({ providedIn: 'root' })
@@ -8,6 +10,40 @@ export class SupabaseService {
   public supabase: SupabaseClient;
 
   constructor() {
+    const nativeAuthStorage = Capacitor.isNativePlatform()
+      ? {
+          getItem: async (key: string): Promise<string | null> => {
+            const { value } = await Preferences.get({ key });
+            if (value !== null) {
+              return value;
+            }
+
+            // Migrate sessions saved by the previous localStorage setup.
+            try {
+              const legacyValue = localStorage.getItem(key);
+              if (legacyValue !== null) {
+                await Preferences.set({ key, value: legacyValue });
+                localStorage.removeItem(key);
+              }
+              return legacyValue;
+            } catch {
+              return null;
+            }
+          },
+          setItem: async (key: string, value: string): Promise<void> => {
+            await Preferences.set({ key, value });
+          },
+          removeItem: async (key: string): Promise<void> => {
+            await Preferences.remove({ key });
+            try {
+              localStorage.removeItem(key);
+            } catch {
+              // localStorage may be unavailable in the native WebView.
+            }
+          }
+        }
+      : undefined;
+
     this.supabase = createClient(
       'https://lcwjtwidxihclizliksd.supabase.co',
       'sb_publishable_h161nq_O9ZsC30WbVTaxNg_x9DhrYIh',
@@ -15,6 +51,7 @@ export class SupabaseService {
         auth: {
           // Keep the user logged in across app close/reopen
           persistSession: true,
+          ...(nativeAuthStorage ? { storage: nativeAuthStorage } : {}),
 
           // Automatically refresh the session before it expires
           autoRefreshToken: true,

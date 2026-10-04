@@ -13,7 +13,8 @@ export const routes: Routes = [
     path: '',
     loadComponent: () =>
       import('./pages/login/login.component')
-        .then(m => m.LoginComponent)
+        .then(m => m.LoginComponent),
+    canActivate: [loginGuard]
   },
 
   // Optional explicit login URL
