@@ -70,7 +70,7 @@
           ></textarea>
         </div>
 
-        <div *ngIf="isApprovedTemplateMode()" class="template-config-wrap">
+        <div *ngIf="isApprovedTemplateMode() && !isExpiryReminderTemplate()" class="template-config-wrap">
           <div class="template-grid">
             <div>
               <label>Approved template name</label>
@@ -85,6 +85,10 @@
           <input [(ngModel)]="approvedTemplateVariables" type="text" placeholder="e.g. &#123;name&#125;, &#123;expiry_date&#125;">
         </div>
 
+        <p class="preview-hint" *ngIf="isExpiryReminderTemplate()">
+          Approved template: <strong>library_renewal_notice</strong> (language <strong>en</strong>). This template does not require variables.
+        </p>
+
         <!-- Preview -->
         <div class="preview-box">
           <p class="preview-label">Preview</p>
@@ -95,7 +99,7 @@
           <p class="preview-hint" *ngIf="selectedPreset.id === 'hello_world'">
             ⚠️ <strong>hello_world</strong> only works from Meta public test numbers. It will not send from your live production sender.
           </p>
-          <p class="preview-hint" *ngIf="isApprovedTemplateMode()">
+          <p class="preview-hint" *ngIf="isApprovedTemplateMode() && !isExpiryReminderTemplate()">
             ℹ️ Use the exact approved template name and language from WhatsApp Manager. Variables must match the template body order.
           </p>
           <p class="preview-hint" *ngIf="selectedPreset.mode === 'text'">

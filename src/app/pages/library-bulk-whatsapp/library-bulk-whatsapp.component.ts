@@ -64,7 +64,7 @@ export class LibraryBulkWhatsappComponent implements OnInit, OnDestroy {
   searchTerm = '';
 
   presets = WA_PRESETS;
-  selectedPresetId = 'approved_hi_template';
+  selectedPresetId = 'expiry_reminder_template';
   customMessage = '';
   approvedTemplateName = '';
   approvedTemplateLanguage = '';
@@ -270,6 +270,10 @@ export class LibraryBulkWhatsappComponent implements OnInit, OnDestroy {
     return this.selectedPreset.mode === 'template' && this.selectedPreset.id !== 'hello_world';
   }
 
+  isExpiryReminderTemplate(): boolean {
+    return this.selectedPreset.id === 'expiry_reminder_template';
+  }
+
   private parseTemplateVariables(): string[] {
     return this.approvedTemplateVariables
       .split(',')
@@ -287,12 +291,19 @@ export class LibraryBulkWhatsappComponent implements OnInit, OnDestroy {
     }
 
     const preset = this.selectedPreset;
-    const activeTemplateName = this.approvedTemplateName.trim() || (preset.template_name ?? '').trim();
-    const activeTemplateLanguage = this.approvedTemplateLanguage.trim() || (preset.template_language ?? '').trim() || 'en_US';
+    const fixedExpiryTemplate = preset.id === 'expiry_reminder_template';
+    const activeTemplateName = fixedExpiryTemplate
+      ? (preset.template_name ?? '').trim()
+      : this.approvedTemplateName.trim() || (preset.template_name ?? '').trim();
+    const activeTemplateLanguage = fixedExpiryTemplate
+      ? (preset.template_language ?? '').trim()
+      : this.approvedTemplateLanguage.trim() || (preset.template_language ?? '').trim() || 'en_US';
     const templateParamsInput = this.approvedTemplateVariables.trim();
-    const activeTemplateParams = templateParamsInput
-      ? this.parseTemplateVariables()
-      : (preset.template_params ?? []);
+    const activeTemplateParams = fixedExpiryTemplate
+      ? (preset.template_params ?? [])
+      : templateParamsInput
+        ? this.parseTemplateVariables()
+        : (preset.template_params ?? []);
 
     if (preset.id === 'custom_text' && !this.customMessage.trim()) {
       this.errorMessage = 'Please enter a custom message.';
@@ -337,7 +348,7 @@ export class LibraryBulkWhatsappComponent implements OnInit, OnDestroy {
           template_name: activeTemplateName,
           template_language: activeTemplateLanguage,
           template_params: activeTemplateParams,
-          use_student_values: true,
+          use_student_values: preset.use_student_values ?? false,
         };
       }
 
